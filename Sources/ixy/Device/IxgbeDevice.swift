@@ -1,6 +1,6 @@
 
 /// the base class for the Intel 82599
-public class Device {
+public class IxgbeDevice {
 	public let address: PCIAddress
 	public let receiveQueueCount: UInt
 	public let transmitQueueCount: UInt
@@ -11,7 +11,7 @@ public class Device {
 	internal var packetMempool: DMAMempool
 	internal var packetMemoryMap: MemoryMap
 
-	internal var driver: Driver
+	internal var driver: IxgbeDriver
 
 	internal enum DeviceError: Error {
 		case unknownError
@@ -28,13 +28,13 @@ public class Device {
 
 		// unfortunately this has to be a static method, as we would have to allocate
 		// the mempool before checking the device if it would be a normal method
-		try Device.checkConfig(address: address)
+		try IxgbeDevice.checkConfig(address: address)
 
 		// initialize the driver
-		self.driver = try Driver(address: address)
+		self.driver = try IxgbeDriver(address: address)
 
 		// create packet buffer and assign
-		(self.packetMempool, self.packetMemoryMap) = try Device.createPacketBuffer(count: (rxCount + txCount) * 2)
+		(self.packetMempool, self.packetMemoryMap) = try IxgbeDevice.createPacketBuffer(count: (rxCount + txCount) * 2)
 
 		try open()
 	}
@@ -42,7 +42,7 @@ public class Device {
 	static func createPacketBuffer(count: UInt) throws -> (DMAMempool, MemoryMap) {
 		// calculate sizes
 		let packetCount: UInt = count * Constants.Queue.ringEntryCount
-		let packetMemorySize: UInt = packetCount * Constants.Device.maxPacketSize
+		let packetMemorySize: UInt = packetCount * Constants.IxgbeDevice.maxPacketSize
 
 		Log.info("Allocating packet buffer for \(packetCount) packets (size=\(packetMemorySize))", component: .device)
 
@@ -51,7 +51,7 @@ public class Device {
 		let packetMemory: UnsafeMutableRawPointer = packetHugepage.address
 
 		// get physical address
-		let packetMempool = try DMAMempool(memory: packetMemory, entrySize: Constants.Device.maxPacketSize, entryCount: packetCount)
+		let packetMempool = try DMAMempool(memory: packetMemory, entrySize: Constants.IxgbeDevice.maxPacketSize, entryCount: packetCount)
 		return (packetMempool, packetHugepage.memoryMap)
 	}
 
@@ -82,7 +82,7 @@ public class Device {
 
 		// check vendor
 		let vendor = config.vendorID
-		guard vendor == Constants.Device.vendorID else {
+		guard vendor == Constants.IxgbeDevice.vendorID else {
 			Log.error("Vendor \(vendor) not supported", component: .device)
 			throw DeviceError.wrongDeviceType
 		}

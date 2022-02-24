@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Driver {
+extension IxgbeDriver {
 	internal func start(queue: ReceiveQueue) {
 		let index = UInt32(queue.index)
 		let rxdctl = IXGBE_RXDCTL(index)

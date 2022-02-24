@@ -8,7 +8,7 @@
 import Foundation
 
 /// abstraction for the Intel 82599 pci interface
-class Driver {
+class IxgbeDriver {
 	internal let address: PCIAddress
 	private let resource: UnsafeMutableRawPointer
 	private let mmap: MemoryMap
@@ -22,10 +22,10 @@ class Driver {
 
 	init(address: PCIAddress) throws {
 		self.address = address
-		try Driver.removeDriver(address: address)
-		try Driver.enableDMA(address: address)
+		try IxgbeDriver.removeDriver(address: address)
+		try IxgbeDriver.enableDMA(address: address)
 
-		let mmap = try Driver.mmapResource(address: address)
+		let mmap = try IxgbeDriver.mmapResource(address: address)
 		self.mmap = mmap
 		self.resource = mmap.address
 	}
@@ -44,7 +44,7 @@ fileprivate extension DeviceStats {
 	}
 }
 
-extension Driver {
+extension IxgbeDriver {
 	subscript(address: UInt32) -> UInt32 {
 		get {
 			return resource.load(fromByteOffset: Int(address), as: UInt32.self)

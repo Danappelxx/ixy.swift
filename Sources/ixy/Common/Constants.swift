@@ -18,8 +18,13 @@ struct Constants {
 		internal static let pageSize: Int = (1 << 21)
 	}
 
-	struct Device {
+	struct IxgbeDevice {
 		internal static let vendorID: UInt16 = 0x8086
+		internal static let maxPacketSize: UInt = 2048
+	}
+
+	struct VirtIODevice {
+		internal static let vendorID: UInt16 = 0x1af4
 		internal static let maxPacketSize: UInt = 2048
 	}
 

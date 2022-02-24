@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Driver {
+extension IxgbeDriver {
 	static func mmapResource(address: PCIAddress) throws -> MemoryMap {
 		let path = address.path + "/resource0"
 		let file = try File(path: path, flags: O_RDWR)

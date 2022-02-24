@@ -6,7 +6,7 @@ public class Queue {
 	internal let descriptors: [Descriptor]
 	internal var tailIndex: Int = 0
 	internal var headIndex: Int = 0
-	internal let driver: Driver
+	internal let driver: IxgbeDriver
 	internal let index: UInt
 
 	internal let address: DMAMemory
@@ -16,7 +16,7 @@ public class Queue {
 		case memoryError
 	}
 
-	required init(index: UInt, memory: MemoryMap, packetMempool: DMAMempool, descriptorCount: UInt, driver: Driver) throws {
+	required init(index: UInt, memory: MemoryMap, packetMempool: DMAMempool, descriptorCount: UInt, driver: IxgbeDriver) throws {
 		self.memory = memory
 		self.packetMempool = packetMempool
 		self.driver = driver
@@ -39,7 +39,7 @@ public class Queue {
 		
 	}
 
-	static func withHugepageMemory(index: UInt, packetMempool: DMAMempool, descriptorCount: UInt, driver: Driver) throws -> Self {
+	static func withHugepageMemory(index: UInt, packetMempool: DMAMempool, descriptorCount: UInt, driver: IxgbeDriver) throws -> Self {
 		let pageSize = (Int(descriptorCount) * MemoryLayout<Int64>.size * 2)
 		let hugepage = try Hugepage(size: pageSize, requireContiguous: true)
 		return try self.init(index: index, memory: hugepage.memoryMap, packetMempool: packetMempool, descriptorCount: descriptorCount, driver: driver)

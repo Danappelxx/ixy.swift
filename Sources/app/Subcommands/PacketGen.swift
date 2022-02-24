@@ -11,12 +11,12 @@ import ixy
 class PacketGen: Subcommand {
 	static let usage: String = "[device1]"
 
-	private let device: Device
+	private let device: IxgbeDevice
 	private var stats: DeviceStats
 	private var nextTime: DispatchTime
 
 	init(address: PCIAddress) throws {
-		self.device = try Device(address: address, receiveQueues: 1, transmitQueues: 1)
+		self.device = try IxgbeDevice(address: address, receiveQueues: 1, transmitQueues: 1)
 		self.stats = device.readAndResetStats()
 		self.nextTime = DispatchTime.now()
 	}

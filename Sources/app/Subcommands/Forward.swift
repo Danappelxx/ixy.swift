@@ -17,8 +17,8 @@ import Darwin.C
 class Forward: Subcommand {
 	static let usage: String = "[device1] [device2]"
 
-	let device1: Device
-	let device2: Device
+	let device1: IxgbeDevice
+	let device2: IxgbeDevice
 	let batchSize: Int?
 	var overallStats1: DeviceStats = .zero
 	var overallStats2: DeviceStats = .zero
@@ -36,8 +36,8 @@ class Forward: Subcommand {
 		Log.log("Starting forward from \(device1Address) to \(device2Address)", level: .info, component: "app")
 
 		// init devices
-		self.device1 = try Device(address: device1Address, receiveQueues: 1, transmitQueues: 1)
-		self.device2 = try Device(address: device2Address, receiveQueues: 1, transmitQueues: 1)
+		self.device1 = try IxgbeDevice(address: device1Address, receiveQueues: 1, transmitQueues: 1)
+		self.device2 = try IxgbeDevice(address: device2Address, receiveQueues: 1, transmitQueues: 1)
 		self.batchSize = batchSize
 	}
 
@@ -53,7 +53,7 @@ class Forward: Subcommand {
 	}
 
 	// process/forward from -> to device using a specific queue (currently the queue is always 0)
-	private func process(from: Device, to: Device, queue: Int) {
+	private func process(from: IxgbeDevice, to: IxgbeDevice, queue: Int) {
 		// get queues
 		let rx = from.receiveQueues[queue]
 		let tx = to.transmitQueues[queue]
