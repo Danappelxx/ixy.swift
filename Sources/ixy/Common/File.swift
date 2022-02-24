@@ -68,14 +68,17 @@ extension File {
 	}
 
 	internal func writeString(_ string: String) {
-		guard let chars = string.cString(using: .utf8) else {
-			Log.error("Couldn't get c-string from \(string)", component: .file)
-			return;
+		// withUTF8 can mutate to make the string contiguous
+		var copy = string
+		copy.withUTF8 { chars in
+			guard let pathPointer = chars.baseAddress else {
+				Log.error("Couldn't get c-string from \(string)", component: .file)
+				return;
+			}
+			let bytesToWrite = chars.count - 1
+			let bytesWritten = write(fd, pathPointer, chars.count - 1)
+			assert(bytesWritten == bytesToWrite, "write complete string \(errno) \(bytesWritten) \(chars.count): \(chars)")
 		}
-		let pathPointer: UnsafePointer<CChar> = UnsafePointer(chars)
-		let bytesToWrite = chars.count - 1
-		let bytesWritten = write(fd, pathPointer, bytesToWrite)
-		assert(bytesWritten == bytesToWrite, "write complete string \(errno) \(bytesWritten) \(chars.count): \(chars)")
 	}
 
 	subscript<T: BinaryInteger>(offset: off_t) -> T {

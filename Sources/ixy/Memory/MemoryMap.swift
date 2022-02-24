@@ -88,7 +88,7 @@ extension MemoryMap.Flags {
 	static let shared = Flags(rawValue: MAP_SHARED)
 	#if os(OSX)
 	// no hugetable on osx
-	static let hugetable = Flags(rawValue: 0x00)
+	static let hugetable = Flags([])
 	#else
 	static let hugetable = Flags(rawValue: MAP_HUGETLB)
 	#endif
