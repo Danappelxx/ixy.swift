@@ -21,13 +21,13 @@ internal class File {
 	}
 
 	internal init(path: String, flags: Int32, createMode: mode_t? = nil) throws {
-		guard let chars = path.cString(using: .utf8) else { throw FileError.internalError }
-		let pathPointer: UnsafePointer<CChar> = UnsafePointer(chars)
-		if let mode = createMode {
-			self.fd = open(pathPointer, flags, mode)
-		} else {
-			self.fd = open(pathPointer, flags)
-		}
+        self.fd = path.withCString { pathPointer in
+            if let mode = createMode {
+                return open(pathPointer, flags, mode)
+            } else {
+                return open(pathPointer, flags)
+            }
+        }
 		guard self.fd >= 0 else { throw FileError.openError(errno) }
 		self.closeOnDealloc = true
 		self.path = path
