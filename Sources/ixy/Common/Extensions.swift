@@ -15,6 +15,25 @@ extension BinaryInteger {
 	}
 }
 
+// MARK: - extension to align integer to specific alignment
+extension Int {
+	func alignedCeil(to alignment: Int) -> Int {
+		(self + alignment - 1).alignedFloor(to: alignment)
+	}
+	func alignedFloor(to alignment: Int) -> Int {
+		self & (~(alignment - 1))
+	}
+}
+extension UInt {
+	func alignedCeil(to alignment: UInt) -> UInt {
+		(self + alignment - 1).alignedFloor(to: alignment)
+	}
+	func alignedFloor(to alignment: UInt) -> UInt {
+		self & (~(alignment - 1))
+	}
+}
+
+
 // MARK: - extension to access individual bits
 extension BinaryInteger {
 	subscript<B: BinaryInteger>(bit: B) -> Bool {

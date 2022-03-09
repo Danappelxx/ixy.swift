@@ -7,25 +7,25 @@
 
 import Foundation
 
+enum DriverError: Swift.Error {
+	case unknownError
+	case unbindError
+	case ioError
+	case initializationError
+}
+
 /// abstraction for the Intel 82599 pci interface
 class IxgbeDriver {
 	internal let address: PCIAddress
 	private let resource: UnsafeMutableRawPointer
 	private let mmap: MemoryMap
 
-	enum Error: Swift.Error {
-		case unknownError
-		case unbindError
-		case ioError
-		case initializationError
-	}
-
 	init(address: PCIAddress) throws {
 		self.address = address
-		try IxgbeDriver.removeDriver(address: address)
-		try IxgbeDriver.enableDMA(address: address)
+		try address.removeDriver()
+		try address.enableDMA()
 
-		let mmap = try IxgbeDriver.mmapResource(address: address)
+		let mmap = try address.mmapResource()
 		self.mmap = mmap
 		self.resource = mmap.address
 	}

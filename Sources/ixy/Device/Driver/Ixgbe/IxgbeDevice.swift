@@ -1,6 +1,12 @@
+public enum DeviceError: Error {
+	case unknownError
+	case ioError
+	case wrongDeviceType
+	case memoryError
+}
 
 /// the base class for the Intel 82599
-public class IxgbeDevice {
+public final class IxgbeDevice {
 	public let address: PCIAddress
 	public let receiveQueueCount: UInt
 	public let transmitQueueCount: UInt
@@ -12,13 +18,6 @@ public class IxgbeDevice {
 	internal var packetMemoryMap: MemoryMap
 
 	internal var driver: IxgbeDriver
-
-	internal enum DeviceError: Error {
-		case unknownError
-		case ioError
-		case wrongDeviceType
-		case memoryError
-	}
 
 	public init(address: PCIAddress, receiveQueues rxCount: UInt = 1, transmitQueues txCount: UInt = 1) throws {
 		// set properties

@@ -8,36 +8,6 @@
 import Foundation
 
 extension IxgbeDriver {
-	static func mmapResource(address: PCIAddress) throws -> MemoryMap {
-		let path = address.path + "/resource0"
-		let file = try File(path: path, flags: O_RDWR)
-		let mmap = try MemoryMap(file: file, size: nil, access: .readwrite, flags: .shared)
-
-		Log.debug("mmap'ed resource0: \(path)", component: .driver)
-
-		return mmap
-	}
-
-	static func removeDriver(address: PCIAddress) throws {
-		let path = address.path + "/driver/unbind"
-		guard let file = try? File(path: path, flags: O_WRONLY) else {
-			Log.warn("Could not unbind: \(path)", component: .driver)
-			return
-		}
-
-		file.writeString(address.description)
-		Log.info("Did unbind driver", component: .driver)
-	}
-
-	static func enableDMA(address: PCIAddress) throws {
-		let path = address.path + "/config"
-		guard let file = try? File(path: path, flags: O_RDWR) else {
-			throw Error.unbindError
-		}
-
-		file[4] |= (1 << 2) as UInt16;
-	}
-
 	func resetAndInit() {
 		reset()
 		initDevice()
@@ -169,7 +139,7 @@ extension IxgbeDriver {
 			speed = self.linkSpeed
 		}
 
-		guard let safeSpeed = speed else { throw Error.initializationError }
+		guard let safeSpeed = speed else { throw DriverError.initializationError }
 		Log.info("Link speed \(safeSpeed)", component: .driver)
 	}
 

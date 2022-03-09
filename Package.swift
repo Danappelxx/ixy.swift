@@ -4,6 +4,9 @@ import PackageDescription
 
 let package = Package(
     name: "ixy",
+	platforms: [
+		.macOS(.v11),
+	],
     products: [
         .library(
             name: "ixy",
@@ -17,7 +20,10 @@ let package = Package(
     targets: [
         .target(
             name: "ixy",
-            dependencies: []),
+			dependencies: [.target(name: "CVirtio")]),
+		.target(
+			name: "CVirtio",
+			dependencies: []),
         .executableTarget(
             name: "app",
             dependencies: [.target(name: "ixy")]),

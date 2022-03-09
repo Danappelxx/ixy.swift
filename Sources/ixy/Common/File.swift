@@ -1,5 +1,7 @@
+// TODO: Migrate to System
 import Foundation
 
+// TODO: Migrate to System.FileDescriptor
 /// a simple file wrapper class, which uses file descriptors to access the file
 internal class File {
 	internal var fd: Int32
@@ -79,6 +81,25 @@ extension File {
 			let bytesWritten = write(fd, pathPointer, chars.count - 1)
 			assert(bytesWritten == bytesToWrite, "write complete string \(errno) \(bytesWritten) \(chars.count): \(chars)")
 		}
+	}
+
+	func writeU8<T: BinaryInteger>(_ val: T, at offset: Int32) {
+		self[off_t(offset)] = UInt8(val)
+	}
+	func writeU16<T: BinaryInteger>(_ val: T, at offset: Int32) {
+		self[off_t(offset)] = UInt16(val)
+	}
+	func writeU32<T: BinaryInteger>(_ val: T, at offset: Int32) {
+		self[off_t(offset)] = UInt32(val)
+	}
+	func readU8(at offset: Int32) -> UInt8 {
+		return self[off_t(offset)]
+	}
+	func readU16(at offset: Int32) -> UInt16 {
+		return self[off_t(offset)]
+	}
+	func readU32(at offset: Int32) -> UInt32 {
+		return self[off_t(offset)]
 	}
 
 	subscript<T: BinaryInteger>(offset: off_t) -> T {

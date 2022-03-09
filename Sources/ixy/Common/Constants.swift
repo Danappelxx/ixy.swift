@@ -26,6 +26,7 @@ struct Constants {
 	struct VirtIODevice {
 		internal static let vendorID: UInt16 = 0x1af4
 		internal static let maxPacketSize: UInt = 2048
+		internal static let queueAlignment: Int = 4096
 	}
 
 	struct Queue {
